@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -24,6 +25,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     //holds the last recorder light sensor reading
     private int lightReading;
+
+    //show light sensor readings (just for testing)
+    private TextView lightSensorReading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mLightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+
+        lightSensorReading = (TextView) findViewById(R.id.light_reading);
     }
 
     @Override
@@ -87,7 +93,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
          lightReading = (int) event.values[0];
-        //TODO add action when
+        //for testing purposes
+        lightSensorReading.setText(String.valueOf(lightReading));
+
+        //TODO add action when reading changes
     }
 
     @Override
