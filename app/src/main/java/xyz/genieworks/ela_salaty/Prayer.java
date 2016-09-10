@@ -31,15 +31,16 @@ public class Prayer {
 
     /**
      * called to start  new prayer
-     * @param maxIntensity the current max light intensity
+     * @param currentReading the current light reading at praying start
      * @param ratio current intensity to max intensity to detect sagda
      * @param activity the calling activity
      */
-    public void startPrayer(int maxIntensity,float ratio, Activity activity){
+    public void startPrayer(int currentReading,float ratio, Activity activity){
 
+        Log.d(Tag, "Prayer Started");
         isPrayerStarted = true;
         currentKneeling =1;
-        maxLightIntensity = maxIntensity;
+        maxLightIntensity = currentReading;
         sagdaCounter = 0;
         sagdaDetectorRatio = ratio;
         isSagdaState = false;
@@ -56,7 +57,9 @@ public class Prayer {
      * @param currentIntensity the new sensor value
      */
     public void updateSensorValue(int currentIntensity){
+
         if(currentKneeling < 4){
+            Log.d(Tag,"current reading = "+ currentIntensity + " max intensity = "+ maxLightIntensity);
             if(currentIntensity > maxLightIntensity ) {
                 maxLightIntensity = currentIntensity;
             }
@@ -65,12 +68,7 @@ public class Prayer {
                 if(currentIntensity < sagdaDetectorRatio*maxLightIntensity){
                     Log.d(Tag,"sagda detected");
                     isSagdaState = true;
-                    if( (++sagdaCounter) == 2){
-                        Log.d(Tag,"second sagda in kneeling");
-                        currentKneeling++;
-                        currentKneelingText.setText(String.valueOf(currentKneeling));
-                        sagdaCounter =0;
-                    }
+                    ++sagdaCounter;
                 }
             }
             else{
@@ -78,6 +76,13 @@ public class Prayer {
                 if(currentIntensity >= sagdaDetectorRatio*maxLightIntensity){
                     Log.d(Tag,"sagda finished");
                     isSagdaState = false;
+
+                    //current kneeling has ended
+                    if(sagdaCounter == 2){
+                        sagdaCounter = 0;
+                        ++currentKneeling;
+                        currentKneelingText.setText(String.valueOf(currentKneeling));
+                    }
                 }
             }
         }

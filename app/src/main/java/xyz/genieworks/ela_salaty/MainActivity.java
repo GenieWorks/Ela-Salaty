@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -25,8 +26,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     //holds the last recorder light sensor reading
     private int lightReading;
-
-    private int maxLightIntensity;
 
     //show light sensor readings (just for testing)
     private TextView lightSensorReading;
@@ -41,20 +40,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //disable screen lock when current activity is on top
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(lightReading < 15){
+                    Toast.makeText(MainActivity.this,"please put your phone in a more lighty room and try again",Toast.LENGTH_LONG).show();
+                }
                 //start praying observing
-                mPrayer.startPrayer(maxLightIntensity, .5f,MainActivity.this);
-                fab.setVisibility(View.GONE);
+                else {
+                    //disable screen lock when praying starts
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+                    mPrayer.startPrayer(lightReading,.5f, MainActivity.this);
+                    fab.setVisibility(View.GONE);
+                }
             }
         });
-
-        maxLightIntensity = 0;
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mLightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -108,15 +110,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //for testing purposes
         lightSensorReading.setText(String.valueOf(lightReading));
 
-        if(lightReading > maxLightIntensity)
-            maxLightIntensity = lightReading;
-
         if(Prayer.isPrayerStarted)
             mPrayer.updateSensorValue(lightReading);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        //TODO add action id sensor accuracy changes
+        //TODO add action when sensor accuracy changes
     }
 }
