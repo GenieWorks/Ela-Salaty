@@ -26,8 +26,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //holds the last recorder light sensor reading
     private int lightReading;
 
+    private int maxLightIntensity;
+
     //show light sensor readings (just for testing)
     private TextView lightSensorReading;
+
+    private Prayer mPrayer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +44,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //disable screen lock when current activity is on top
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO begin prayer counter
+                //start praying observing
+                mPrayer.startPrayer(maxLightIntensity, .5f,MainActivity.this);
+                fab.setVisibility(View.GONE);
             }
         });
+
+        maxLightIntensity = 0;
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mLightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
         lightSensorReading = (TextView) findViewById(R.id.light_reading);
+
+        mPrayer = new Prayer();
+
     }
 
     @Override
@@ -80,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onResume(){
         super.onResume();
         //register light sensor listener
-        mSensorManager.registerListener(this,mLightSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this,mLightSensor,SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
@@ -96,7 +108,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //for testing purposes
         lightSensorReading.setText(String.valueOf(lightReading));
 
-        //TODO add action when reading changes
+        if(lightReading > maxLightIntensity)
+            maxLightIntensity = lightReading;
+
+        if(Prayer.isPrayerStarted)
+            mPrayer.updateSensorValue(lightReading);
     }
 
     @Override
