@@ -21,6 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="xyz.genieworks.ela_salaty.Intro"
+            android:label="@string/app_intro" />
     </application>
 
 </manifest>
