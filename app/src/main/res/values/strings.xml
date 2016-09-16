@@ -6,4 +6,5 @@
     <string name="app_intro">Welcome</string>
     <string name="intro_slide1">Welcome to the app</string>
     <string name="intro_slide2">Never let me go</string>
+    <string name="action_help">Help</string>
 </resources>

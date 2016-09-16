@@ -6,4 +6,5 @@
     <string name="intro_slide1">مرحبا</string>
     <string name="app_intro">مرحبا</string>
     <string name="main_instruction_string">اضغط علامة "+" وابداء الصلاة</string>
+    <string name="action_help">مساعدة</string>
 </resources>

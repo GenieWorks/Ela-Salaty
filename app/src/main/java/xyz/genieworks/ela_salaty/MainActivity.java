@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 public class MainActivity extends AppCompatActivity
         implements SensorEventListener, Observer {
@@ -40,6 +44,22 @@ public class MainActivity extends AppCompatActivity
     private int lightReading;
 
     private Prayer mPrayer;
+
+    private void showHelp() {
+        ShowcaseView view = new ShowcaseView.Builder(this)
+                .setTarget(new ViewTarget(findViewById(R.id.start_praying)))
+                .withMaterialShowcase()
+                //.setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.main_instruction_string))
+                .hideOnTouchOutside()
+                .setStyle(R.style.CustomShowcaseTheme)
+
+                .build();
+        //view.hide();
+        view.hideButton();
+        //view.show();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +102,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mLightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
 
@@ -108,6 +126,9 @@ public class MainActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
             //TODO add About Activity
+            return true;
+        } else if (id == R.id.action_help) {
+            showHelp();
             return true;
         }
 
