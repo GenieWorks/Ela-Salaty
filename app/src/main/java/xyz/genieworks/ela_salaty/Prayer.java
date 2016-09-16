@@ -2,8 +2,10 @@ package xyz.genieworks.ela_salaty;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -25,7 +27,11 @@ public class Prayer {
 
     private boolean isSagdaState;
 
-    private TextView currentKneelingText;
+    private int [] numbersList;
+
+    private ImageView currentKneelingView;
+
+    private ImageView prayerCover;
 
     private TextView mainInstructionsText;
 
@@ -45,12 +51,17 @@ public class Prayer {
         sagdaDetectorRatio = ratio;
         isSagdaState = false;
 
-        currentKneelingText = (TextView) activity.findViewById(R.id.current_kneeling);
-        mainInstructionsText = (TextView) activity.findViewById(R.id.main_instructions);
+        numbersList = new int[]{R.drawable.number_one,R.drawable.number_two,R.drawable.number_three,R.drawable.number_four};
 
-        currentKneelingText.setVisibility(View.VISIBLE);
+        currentKneelingView = (ImageView) activity.findViewById(R.id.current_kneeling);
+        mainInstructionsText = (TextView) activity.findViewById(R.id.main_instructions);
+        prayerCover = (ImageView) activity.findViewById(R.id.prayer_cover_image);
+
+        prayerCover.setVisibility(View.GONE);
+        currentKneelingView.setVisibility(View.VISIBLE);
         mainInstructionsText.setVisibility(View.GONE);
     }
+
 
     /**
      * call this method when sensor value changes to update kneelings and sagdas count
@@ -81,7 +92,8 @@ public class Prayer {
                     if(sagdaCounter == 2){
                         sagdaCounter = 0;
                         ++currentKneeling;
-                        currentKneelingText.setText(String.valueOf(currentKneeling));
+                        ((BitmapDrawable)currentKneelingView.getDrawable()).getBitmap().recycle();
+                        currentKneelingView.setImageResource(numbersList[currentKneeling-1]);
                     }
                 }
             }

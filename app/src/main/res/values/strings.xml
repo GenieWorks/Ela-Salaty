@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">Ela-Salaty</string>
     <string name="action_about">About</string>
-    <string name="main_instruction_string">press plus button and start praying</string>
+    <string name="main_instruction_string">press + button and start praying</string>
     <string name="light_reading_text">light_reading</string>
     <string name="app_intro">Welcome</string>
     <string name="intro_slide1">Welcome to the app</string>

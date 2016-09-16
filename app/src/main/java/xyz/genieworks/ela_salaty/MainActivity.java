@@ -30,11 +30,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //holds the last recorder light sensor reading
     private int lightReading;
 
-    //show light sensor readings (just for testing)
-    private TextView lightSensorReading;
-
     private Prayer mPrayer;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,28 +46,28 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.start_praying);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lightReading < 15){
-                    Toast.makeText(MainActivity.this,"please put your phone in a more lighty room and try again",Toast.LENGTH_LONG).show();
+                if (lightReading < 15) {
+                    Toast.makeText(MainActivity.this, "please put your phone in a more lighty room and try again", Toast.LENGTH_LONG).show();
                 }
                 //start praying observing
                 else {
                     //disable screen lock when praying starts
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-                    mPrayer.startPrayer(lightReading,.5f, MainActivity.this);
+                    mPrayer.startPrayer(lightReading, .5f, MainActivity.this);
                     fab.setVisibility(View.GONE);
                 }
             }
         });
 
+
+
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mLightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-
-        lightSensorReading = (TextView) findViewById(R.id.light_reading);
 
         mPrayer = new Prayer();
 
@@ -117,10 +113,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
          lightReading = (int) event.values[0];
-        //for testing purposes
-        lightSensorReading.setText(String.valueOf(lightReading));
 
-        if(Prayer.isPrayerStarted)
+         if(Prayer.isPrayerStarted)
             mPrayer.updateSensorValue(lightReading);
     }
 
