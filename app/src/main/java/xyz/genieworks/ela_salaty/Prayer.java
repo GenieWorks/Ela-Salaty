@@ -8,6 +8,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+
 /**
  * Created by ibrahim_hussiny on 9/9/2016.
  */
@@ -29,7 +36,7 @@ public class Prayer {
 
     private int [] numbersList;
 
-    private ImageView currentKneelingView;
+    private SimpleDraweeView currentKneelingView;
 
     private ImageView prayerCover;
 
@@ -53,7 +60,7 @@ public class Prayer {
 
         numbersList = new int[]{R.drawable.number_one,R.drawable.number_two,R.drawable.number_three,R.drawable.number_four};
 
-        currentKneelingView = (ImageView) activity.findViewById(R.id.current_kneeling);
+        currentKneelingView = (SimpleDraweeView) activity.findViewById(R.id.current_kneeling);
         mainInstructionsText = (TextView) activity.findViewById(R.id.main_instructions);
         prayerCover = (ImageView) activity.findViewById(R.id.prayer_cover_image);
 
@@ -92,8 +99,22 @@ public class Prayer {
                     if(sagdaCounter == 2){
                         sagdaCounter = 0;
                         ++currentKneeling;
-                        ((BitmapDrawable)currentKneelingView.getDrawable()).getBitmap().recycle();
-                        currentKneelingView.setImageResource(numbersList[currentKneeling-1]);
+                        //((BitmapDrawable)currentKneelingView.getDrawable()).getBitmap().recycle();
+                        //currentKneelingView.setImageResource(numbersList[currentKneeling-1]);
+                        ImageRequest imageRequest = ImageRequestBuilder
+                                .newBuilderWithResourceId(numbersList[currentKneeling-1])
+                                .setResizeOptions(
+                                    new ResizeOptions(50, 50)
+                                )
+                                .build();
+                        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                                .setImageRequest(imageRequest)
+                                .setOldController(currentKneelingView.getController())
+                                .setAutoPlayAnimations(true)
+                                .build();
+                        currentKneelingView.setController(draweeController);
+                        currentKneelingView.setImageURI(imageRequest.getSourceUri());
+
                     }
                 }
             }
