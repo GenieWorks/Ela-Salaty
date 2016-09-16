@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ela-Salaty</string>
+    <string name="action_about">حول التطبيق</string>
+    <string name="intro_slide2">متسبنيش</string>
+    <string name="intro_slide1">مرحبا</string>
+    <string name="app_intro">مرحبا</string>
+    <string name="main_instruction_string">اضغط علامة "+" وابداء الصلاة</string>
+</resources>
