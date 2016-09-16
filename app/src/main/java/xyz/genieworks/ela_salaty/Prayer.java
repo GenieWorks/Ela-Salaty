@@ -34,21 +34,12 @@ public class Prayer {
 
     private boolean isSagdaState;
 
-    private int [] numbersList;
-
-    private SimpleDraweeView currentKneelingView;
-
-    private ImageView prayerCover;
-
-    private TextView mainInstructionsText;
-
     /**
      * called to start  new prayer
      * @param currentReading the current light reading at praying start
      * @param ratio current intensity to max intensity to detect sagda
-     * @param activity the calling activity
      */
-    public void startPrayer(int currentReading,float ratio, Activity activity){
+    public void startPrayer(int currentReading,float ratio){
 
         Log.d(Tag, "Prayer Started");
         isPrayerStarted = true;
@@ -57,24 +48,15 @@ public class Prayer {
         sagdaCounter = 0;
         sagdaDetectorRatio = ratio;
         isSagdaState = false;
-
-        numbersList = new int[]{R.drawable.number_one,R.drawable.number_two,R.drawable.number_three,R.drawable.number_four};
-
-        currentKneelingView = (SimpleDraweeView) activity.findViewById(R.id.current_kneeling);
-        mainInstructionsText = (TextView) activity.findViewById(R.id.main_instructions);
-        prayerCover = (ImageView) activity.findViewById(R.id.prayer_cover_image);
-
-        prayerCover.setVisibility(View.GONE);
-        currentKneelingView.setVisibility(View.VISIBLE);
-        mainInstructionsText.setVisibility(View.GONE);
     }
 
 
     /**
      * call this method when sensor value changes to update kneelings and sagdas count
      * @param currentIntensity the new sensor value
+     * @param obs on the fly observer pattern.
      */
-    public void updateSensorValue(int currentIntensity){
+    public void updateSensorValue(int currentIntensity, Observer obs){
 
         if(currentKneeling < 4){
             Log.d(Tag,"current reading = "+ currentIntensity + " max intensity = "+ maxLightIntensity);
@@ -99,22 +81,9 @@ public class Prayer {
                     if(sagdaCounter == 2){
                         sagdaCounter = 0;
                         ++currentKneeling;
-                        //((BitmapDrawable)currentKneelingView.getDrawable()).getBitmap().recycle();
-                        //currentKneelingView.setImageResource(numbersList[currentKneeling-1]);
-                        ImageRequest imageRequest = ImageRequestBuilder
-                                .newBuilderWithResourceId(numbersList[currentKneeling-1])
-                                .setResizeOptions(
-                                    new ResizeOptions(50, 50)
-                                )
-                                .build();
-                        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                                .setImageRequest(imageRequest)
-                                .setOldController(currentKneelingView.getController())
-                                .setAutoPlayAnimations(true)
-                                .build();
-                        currentKneelingView.setController(draweeController);
-                        currentKneelingView.setImageURI(imageRequest.getSourceUri());
 
+                        // update the UI that is observing my state.
+                        obs.NotifyChanged(currentKneeling-1);
                     }
                 }
             }

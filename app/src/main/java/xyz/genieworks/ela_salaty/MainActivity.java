@@ -17,10 +17,19 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+
+public class MainActivity extends AppCompatActivity
+        implements SensorEventListener, Observer {
 
     private final String Tag = this.getClass().getSimpleName();
 
@@ -58,7 +67,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     //disable screen lock when praying starts
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-                    mPrayer.startPrayer(lightReading, .5f, MainActivity.this);
+                    SimpleDraweeView currentKneelingView = (SimpleDraweeView) findViewById(R.id.current_kneeling);
+                    TextView mainInstructionsText = (TextView) findViewById(R.id.main_instructions);
+                    SimpleDraweeView prayerCover = (SimpleDraweeView) findViewById(R.id.prayer_cover_image);
+
+                    prayerCover.setVisibility(View.GONE);
+                    currentKneelingView.setVisibility(View.VISIBLE);
+                    mainInstructionsText.setVisibility(View.GONE);
+
+                    mPrayer.startPrayer(lightReading, .5f);
+
                     fab.setVisibility(View.GONE);
                 }
             }
@@ -115,12 +133,49 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
          lightReading = (int) event.values[0];
 
          if(Prayer.isPrayerStarted)
-            mPrayer.updateSensorValue(lightReading);
+            mPrayer.updateSensorValue(lightReading, this);
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         //TODO add action when sensor accuracy changes
+    }
+
+    @Override
+    public void NotifyChanged(int drawable) {
+
+        switch (drawable) {
+            case 0:
+                drawable = R.drawable.number_one;
+                break;
+            case 1:
+                drawable = R.drawable.number_two;
+                break;
+            case 2:
+                drawable = R.drawable.number_three;
+                break;
+            case 3:
+                drawable = R.drawable.number_four;
+                break;
+
+            default:
+                throw new IllegalArgumentException("Fuck Microsoft");
+        }
+
+        SimpleDraweeView currentKneelingView = (SimpleDraweeView) findViewById(R.id.current_kneeling);
+        ImageRequest imageRequest = ImageRequestBuilder
+                .newBuilderWithResourceId(drawable)
+                .setResizeOptions(
+                        new ResizeOptions(50, 50)
+                )
+                .build();
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(imageRequest)
+                .setOldController(currentKneelingView.getController())
+                .setAutoPlayAnimations(true)
+                .build();
+        currentKneelingView.setController(draweeController);
+        currentKneelingView.setImageURI(imageRequest.getSourceUri());
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
