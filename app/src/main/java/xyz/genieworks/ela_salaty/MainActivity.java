@@ -45,6 +45,11 @@ public class MainActivity extends AppCompatActivity
 
     private Prayer mPrayer;
 
+    private FloatingActionButton startPrayerFab;
+
+    private FloatingActionButton finishPrayerFab;
+
+
     private void showHelp() {
         ShowcaseView view = new ShowcaseView.Builder(this)
                 .setTarget(new ViewTarget(findViewById(R.id.start_praying)))
@@ -75,21 +80,22 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.start_praying);
-        fab.setOnClickListener(new View.OnClickListener() {
+        final SimpleDraweeView currentKneelingView = (SimpleDraweeView) findViewById(R.id.current_kneeling);
+        final TextView mainInstructionsText = (TextView) findViewById(R.id.main_instructions);
+        final SimpleDraweeView prayerCover = (SimpleDraweeView) findViewById(R.id.prayer_cover_image);
+
+        startPrayerFab = (FloatingActionButton) findViewById(R.id.start_praying);
+        startPrayerFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (lightReading < 15) {
-                    Toast.makeText(MainActivity.this, "please put your phone in a more lighty room and try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "please put your phone in a more lightly room and try again", Toast.LENGTH_LONG).show();
                 }
                 //start praying observing
                 else {
                     //disable screen lock when praying starts
                     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-                    SimpleDraweeView currentKneelingView = (SimpleDraweeView) findViewById(R.id.current_kneeling);
-                    TextView mainInstructionsText = (TextView) findViewById(R.id.main_instructions);
-                    SimpleDraweeView prayerCover = (SimpleDraweeView) findViewById(R.id.prayer_cover_image);
 
                     prayerCover.setVisibility(View.GONE);
                     currentKneelingView.setVisibility(View.VISIBLE);
@@ -97,10 +103,28 @@ public class MainActivity extends AppCompatActivity
 
                     mPrayer.startPrayer(lightReading, .5f);
 
-                    fab.setVisibility(View.GONE);
+                    NotifyChanged(0);
+
+                    startPrayerFab.setVisibility(View.GONE);
+                    finishPrayerFab.setVisibility(View.VISIBLE);
                 }
             }
         });
+
+        //finish Praying count and return to app maoin view
+        finishPrayerFab = (FloatingActionButton) findViewById(R.id.finish_praying);
+        finishPrayerFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                prayerCover.setVisibility(View.VISIBLE);
+                currentKneelingView.setVisibility(View.GONE);
+                mainInstructionsText.setVisibility(View.VISIBLE);
+
+                startPrayerFab.setVisibility(View.VISIBLE);
+                finishPrayerFab.setVisibility(View.GONE);
+
+            }
+            });
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mLightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -139,7 +163,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume(){
         super.onResume();
         //register light sensor listener
-        mSensorManager.registerListener(this,mLightSensor,SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mLightSensor, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
