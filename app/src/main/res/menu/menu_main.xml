@@ -2,15 +2,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="xyz.genieworks.ela_salaty.MainActivity">
-    <item
-        android:id="@+id/action_about"
-        android:orderInCategory="100"
-        android:title="@string/action_about"
-        app:showAsAction="never" />
 
     <item
         android:id="@+id/action_help"
-        android:orderInCategory="100"
         android:title="@string/action_help"
-        app:showAsAction="never" />
+        android:icon="@drawable/ic_help_48dp"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_language"
+        android:title="@string/action_help"
+        android:icon="@drawable/ic_public_48dp"
+        app:showAsAction="ifRoom" />
 </menu>

@@ -148,11 +148,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_about) {
-            //TODO add About Activity
-            return true;
-        } else if (id == R.id.action_help) {
+        if (id == R.id.action_help) {
             showHelp();
+            return true;
+        } else if (id == R.id.action_language) {
+            //TOOD add language menu
             return true;
         }
 
